@@ -1,0 +1,32 @@
+.panel{
+    text-align: center;
+    width: 50%;
+    height:80%;
+    margin-left:20%;
+    margin-top:5%;
+    color: black;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 7px;
+    display: inline-block;
+    padding: 3%;
+}
+.preview-section .preview{
+    margin-top: 5%;
+    margin-bottom: 5%;
+    max-width: 70%;
+    max-height: 50%;
+}
+.file{
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 4px;
+}
+.file-input{
+    color: transparent;
+    border: .2px solid #fff;
+    border-radius: 4px;
+}
+.file-input ::-webkit-file-upload-button {
+    visibility: hidden;
+  }
