@@ -1,8 +1,10 @@
 .btn-primary{
-    background-color: rgb(44, 46, 187);
+    background-color: rgb(42, 9, 73);
     border-color:none;
     border-radius: 5px;
     width: 35%;
-    margin:4%;
+    margin:4%;    
+    color:white;
     padding: 7px;
+    text-transform: uppercase;
 }

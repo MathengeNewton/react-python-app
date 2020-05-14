@@ -5,7 +5,7 @@ let Button = ({stext}) =>{
     
     return (
         <button className="btn-primary">
-            {stext}
+            <h3>{stext}</h3>
         </button>
     )
 }
