@@ -4,7 +4,7 @@ import './button.css'
 let Button = ({stext}) =>{
     
     return (
-        <button className="btn-primary">
+        <button type="submit" className="btn-primary">
             <h3>{stext}</h3>
         </button>
     )

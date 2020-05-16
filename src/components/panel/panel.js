@@ -1,48 +1,90 @@
 import React ,{useState}from 'react'
 import './panel.css'
 import Preview from '../previewpanel/previewpanel'
-import ProgresBar from '../progressbar/progressbar'
+import Button from '../button/button'
+import axios from 'axios'
 
 
-let Panel = (props) =>{    
-    let [string, setString] =  useState('')
+
+let Panel = () =>{ 
+
     let [visibility,setVisibility] = useState(true)
-    let [preview,setPreview] = useState('none')
-    let [progres,setProgres] = useState('none')
+    let [data,setData] = useState([])  
     
-
-    
-    let src = {
-        preview:string,
+    let style={}
+      
+    let pstyle={
+        display:'none',        
+    }
+    let prs = {
+        width:'70%'
+    }
+    if(visibility){
+        style.display='block'
+        pstyle.display='none'
+    }else{
+        style.display='none'
+        pstyle.display='block'
+    }        
+  //image urls       
+    let src = {        
         excel:'./xlsx.jpg',
         csv:'./csv.jpg',
         json:'./json.jpg',
         word:'./word.jpg'
-    }   
-    let handlechange = () =>{
-       let val = document.getElementById('myfile').value
-       setVisibility(visibility = false)
-       setProgres(progres = '')       
-       setString(string ='./preview.png')
-       setTimeout(()=>{
-           setProgres(progres='none')
-           setPreview(preview = '')
-       },5000)
-       console.log(val)
     }
-       
-    let style={}
-    visibility ?
-         style.display='block': style.display='none'
-    let previewstyle={
-        display:preview
-    }    
-    let progresbarstyle={
-        marginLeft:'2%',
-        marginTop:'5%',
-        textAlign:'center',
-        display:progres
+    let checkfile =(filename)=>{
+        let extension = filename.split('.')
+        let ext = extension[1]
+        ext.toLowerCase()
+        if (ext === 'csv') {
+            return true
+        } else if(ext ==='docx'){
+            return true
+        }else if(ext ==='xlsx'){
+            return true
+        }else if(ext ==='json'){
+            return true
+        }else{
+            return false
+        }
     }
+    let checkform = (e)=> {
+        e.preventDefault()
+        let val = document.querySelector('#myfile')
+        let cfile = val.files[0]
+        console.log(cfile.name)
+        if (!cfile){
+            alert('no file chosen!')
+            e.preventDefault()
+        }else if(!checkfile(cfile.name)){
+            let extension = cfile.split('.')
+            let ext = extension[1]
+            alert(`the system does not handle .${ext} file types`)
+        } else {
+            handlechange(cfile)
+            setVisibility(visibility = false)        
+        }
+    }
+    let handlechange = (mydata) =>{
+        let tdata = {
+            "mydata":mydata
+        }
+        console.log(mydata) 
+        
+            axios.post('/data-center',{
+                method:'POST',
+                body:JSON.stringify(tdata)
+            }).then((response)=>{               
+                let outcome = response.data[0]
+                console.log(outcome)
+                setData(data = data.push(outcome))
+                console.log(data)
+                return outcome              
+            })           
+        
+        }  
+                
     
     return(
         <div id='divstyle'>
@@ -50,13 +92,13 @@ let Panel = (props) =>{
                 <header>
                     <h3>Analysis your files</h3>
                 </header>
-                <form>
+                <form onSubmit={checkform}>
                     <div>
                         <h4>Choose file: </h4>
                     </div>
                     <div className="upload-btn-wrapper">
                         <button className="btn">Upload a file</button>
-                         <input type="file" name="myfile" id="myfile" onChange={handlechange}/>
+                         <input type="file" name="myfile" id="myfile"/>
                     </div>
                     <div className="preview-section">
                         <img className="preview-icon" src={src.word} alt="" />
@@ -64,18 +106,17 @@ let Panel = (props) =>{
                         <img className="preview-icon" src={src.csv} alt="" />
                         <img className="preview-icon" src={src.json} alt="" />
                     </div>
+                    <Button stext = 'submit' />
                 </form>
             </section>
-            <section id="previewcomponent" style={previewstyle}>
+            <section id="previewcomponent" style={pstyle}>
                 <Preview                
-                url = {src.preview}
-                />                
-            </section>
-            <section style={progresbarstyle}>
-                <h3>File being processed...</h3>
-                <ProgresBar />
-            </section>         
+                data = {data}
+                style = {prs}                
+                />             
+            </section>                     
         </div>
     )
 }
+
 export default Panel
