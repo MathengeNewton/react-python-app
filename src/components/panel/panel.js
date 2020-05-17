@@ -7,12 +7,16 @@ import axios from 'axios'
 
 
 let Panel = () =>{ 
-
     let [visibility,setVisibility] = useState(true)
     let [data,setData] = useState([])  
     
     let style={}
-      
+    const dataProcessUrl = 'http://localhost:5000/python.app/api/data-center';
+    const requestHeader = {
+        headers:{
+            contentType:'application/json'
+        }
+    } 
     let pstyle={
         display:'none',        
     }
@@ -52,40 +56,38 @@ let Panel = () =>{
     let checkform = (e)=> {
         e.preventDefault()
         let val = document.querySelector('#myfile')
-        let cfile = val.files[0]
-        console.log(cfile.name)
-        if (!cfile){
+        let actualFile = val.files[0]
+        console.log(actualFile.name)
+        if (!actualFile){
             alert('no file chosen!')
             e.preventDefault()
-        }else if(!checkfile(cfile.name)){
-            let extension = cfile.split('.')
+        }else if(!checkfile(actualFile.name)){
+            let extension = actualFile.split('.')
             let ext = extension[1]
             alert(`the system does not handle .${ext} file types`)
         } else {
-            handlechange(cfile)
+            handlechange(actualFile)
             setVisibility(visibility = false)        
         }
     }
     let handlechange = (mydata) =>{
-        let tdata = {
-            "mydata":mydata
+        let dataDict = {
+            file:mydata
         }
-        console.log(mydata) 
-        
-            axios.post('/data-center',{
-                method:'POST',
-                body:JSON.stringify(tdata)
-            }).then((response)=>{               
-                let outcome = response.data[0]
-                console.log(outcome)
-                setData(data = data.push(outcome))
-                console.log(data)
-                return outcome              
-            })           
-        
-        }  
-                
-    
+        console.log(mydata)            
+                axios.post(dataProcessUrl,dataDict,requestHeader)
+                .then((response)=>{               
+                    let outcome = response.data[0]
+                    console.log(outcome)
+                    setData(data = data.push(outcome))
+                    console.log(data)
+                    return outcome              
+                })
+                .catch(()=>{
+                console.log('error');
+                return false
+            })
+        }
     return(
         <div id='divstyle'>
             <section className="panel" id="maincomponent" style={style}>
